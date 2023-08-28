@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Row, Col, ListGroup, Image } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message.jsx";
 import CheckoutSteps from "../components/CheckoutSteps.jsx";
@@ -9,7 +9,22 @@ function PlaceOrderScreen() {
   const cart = useSelector((state) => state.cart);
   const { cartItems, shippingAddress, paymentMethod } = cart;
 
+  const itemsPrice = cartItems
+    .reduce((acc, item) => acc + item.price * item.quantity, 0)
+    .toFixed(2);
+  const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
+  const taxPrice = (0.082 * Number(itemsPrice)).toFixed(2);
+  const totalPrice = (
+    Number(itemsPrice) +
+    Number(shippingPrice) +
+    Number(taxPrice)
+  ).toFixed(2);
+
   const dispatch = useDispatch();
+
+  const placeOrder = () => {
+    console.log("Place Order");
+  };
 
   return (
     <div>
@@ -77,7 +92,52 @@ function PlaceOrderScreen() {
           </ListGroup>
         </Col>
 
-        <Col md={4}></Col>
+        <Col md={4}>
+          <ListGroup>
+            <ListGroup.Item>
+              <h2>Order Summery</h2>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Row>
+                <Col>Items:</Col>
+                <Col>${itemsPrice}</Col>
+              </Row>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Row>
+                <Col>Shipping:</Col>
+                <Col>${shippingPrice}</Col>
+              </Row>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Row>
+                <Col>Tax:</Col>
+                <Col>${taxPrice}</Col>
+              </Row>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Row>
+                <Col>Total:</Col>
+                <Col>${totalPrice}</Col>
+              </Row>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Button
+                type="button"
+                className="w-100"
+                disabled={!cartItems}
+                onClick={placeOrder}
+              >
+                Place Order
+              </Button>
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
       </Row>
     </div>
   );
