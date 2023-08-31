@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, mixins
 
 from base.models import Product
@@ -16,6 +17,7 @@ class ProductView(mixins.ListModelMixin,
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+    @extend_schema(responses=ProductSerializer)
     def get(self, request, pk=None):
         """
         Handle GET requests for the view.

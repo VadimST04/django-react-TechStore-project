@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -28,6 +29,7 @@ class UserAPIView(APIView):
 
     permission_classes = (IsAdminUser,)
 
+    @extend_schema(responses=UserSerializer)
     def get(self, request):
         """
         Handle GET requests for the view.
@@ -48,6 +50,7 @@ class UserProfileAPIView(APIView):
 
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=UserSerializer)
     def get(self, request):
         """
         Handle GET requests for the view.
@@ -58,6 +61,7 @@ class UserProfileAPIView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(responses=UserSerializerWithToken)
     def put(self, request):
         """
         Handle PUT requests for the view.
@@ -86,6 +90,7 @@ class UserRegisterAPIView(APIView):
     View for registering new users.
     """
 
+    @extend_schema(responses=UserSerializerWithToken)
     def post(self, request):
         """
         Handle POST requests for the view.

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from base.serializers import OrderSerializer
 class OrderAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=OrderSerializer)
     def post(self, request):
         user = request.user
         data = request.data

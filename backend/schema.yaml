@@ -1,0 +1,251 @@
+openapi: 3.0.3
+info:
+  title: Django DRF Ecommerce
+  version: 0.0.0
+paths:
+  /api/orders/add/:
+    post:
+      operationId: api_orders_add_create
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/products/:
+    get:
+      operationId: api_products_list
+      description: |-
+        Handle GET requests for the view.
+        :param request: An HTTP request object.
+        :param pk: Product ID for retrieving a specific product (default is None).
+        :return: returns all products if pk was not provided, otherwise, returns a specific product
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+  /api/products/{id}/:
+    get:
+      operationId: api_products_list_2
+      description: |-
+        Handle GET requests for the view.
+        :param request: An HTTP request object.
+        :param pk: Product ID for retrieving a specific product (default is None).
+        :return: returns all products if pk was not provided, otherwise, returns a specific product
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+  /api/users/:
+    get:
+      operationId: api_users_retrieve
+      description: |-
+        Handle GET requests for the view.
+        :param request: An HTTP request object.
+        :return:  Returns list of all users.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/login/:
+    post:
+      operationId: api_users_login_create
+      description: |-
+        This view extends the TokenObtainPairView from the SimpleJWT library to use a custom view
+        for obtaining authentication tokens.
+        serializer_class: MyTokenObtainPairSerializer is a custom serializers.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyTokenObtainPair'
+          description: ''
+  /api/users/profile/:
+    get:
+      operationId: api_users_profile_retrieve
+      description: |-
+        Handle GET requests for the view.
+        :param request: An HTTP request object.
+        :return: Returns the profile information of the authenticated user
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: api_users_profile_update
+      description: |-
+        Handle PUT requests for the view.
+        :param request: An HTTP request object.
+        :return: pdates user information and returns the updated profile.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/profile/update/:
+    get:
+      operationId: api_users_profile_update_retrieve
+      description: |-
+        Handle GET requests for the view.
+        :param request: An HTTP request object.
+        :return: Returns the profile information of the authenticated user
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: api_users_profile_update_update
+      description: |-
+        Handle PUT requests for the view.
+        :param request: An HTTP request object.
+        :return: pdates user information and returns the updated profile.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/register/:
+    post:
+      operationId: api_users_register_create
+      description: |-
+        Handle POST requests for the view.
+        :param request: An HTTP request object.
+        :return: Returns information about the new user along with an access token if the user has not been
+        previously registered in the database. If the user with the provided email already exists,
+        returns an error message.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    MyTokenObtainPair:
+      type: object
+      description: |-
+        This serializer extends the TokenObtainPairSerializer from the SimpleJWT library.
+        It adds user-specific data to the token response, expanding the default return.
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
+    Product:
+      type: object
+      description: This serializer converts Product model instances to JSON representation.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 200
+        image:
+          type: string
+          format: uri
+          nullable: true
+        brand:
+          type: string
+          nullable: true
+          maxLength: 200
+        category:
+          type: string
+          nullable: true
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        rating:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+          nullable: true
+        num_reviews:
+          type: integer
+          nullable: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+          nullable: true
+        count_in_stock:
+          type: integer
+          nullable: true
+        create_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+          nullable: true
+      required:
+      - create_at
+      - id
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
