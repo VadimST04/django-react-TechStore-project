@@ -14,7 +14,7 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
 } from "../constants/userConstants.jsx";
-
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants.jsx";
 import axios from "axios";
 
 export const login = (email, password) => async (dispatch) => {
@@ -65,6 +65,12 @@ export const logout = () => (dispatch) => {
   dispatch({
     type: USER_DETAILS_RESET,
   });
+
+  dispatch({
+    type: CART_CLEAR_ITEMS,
+  });
+
+  localStorage.removeItem("cartItems");
 };
 
 export const register = (name, email, password) => async (dispatch) => {

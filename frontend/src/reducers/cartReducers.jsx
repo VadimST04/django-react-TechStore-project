@@ -4,6 +4,7 @@ import {
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
 } from "../constants/cartConstants.jsx";
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants.jsx";
 
 export const cartReducer = (
   state = { cartItems: [], shippingAddress: {}, paymentMethod: {} },
@@ -49,6 +50,9 @@ export const cartReducer = (
         ...state,
         paymentMethod: action.payload,
       };
+
+    case CART_CLEAR_ITEMS:
+      return { ...state, cartItems: [] };
 
     default:
       return {
