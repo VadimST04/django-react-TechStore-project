@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -59,3 +60,16 @@ class OrderAPIView(APIView):
         serializer = OrderSerializer(order)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @extend_schema(responses=OrderSerializer)
+    def get(self, request, pk):
+        user = request.user
+
+        try:
+            order = Order.objects.get(id=pk)
+            if user.is_staff or order.user == user:
+                serializer = OrderSerializer(order)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({'detail': 'Not authorized to view this order'})
+        except ObjectDoesNotExist:
+            return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)

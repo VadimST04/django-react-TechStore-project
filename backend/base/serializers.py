@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from yaml.serializer import SerializerError
+
 from base.models import Product, Order, OrderItem, ShippingAddress
 
 
@@ -126,13 +128,33 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
+    """
+    This serializer converts ShippingAddress model instances to JSON representation.
+    """
+
     class Meta:
+        """
+        model: The ShippingAddress model class to be serialized.
+        fields: The list of fields to be included in the serialized representation
+        (in this case all fields).
+        """
+
         model = ShippingAddress
         fields = '__all__'
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    """
+    This serializer converts OrderItem model instances to JSON representation.
+    """
+
     class Meta:
+        """
+        model: The OrderItem model class to be serialized.
+        fields: The list of fields to be included in the serialized representation
+        (in this case all fields).
+        """
+
         model = OrderItem
         fields = '__all__'
 
@@ -153,8 +175,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_shipping_address(self, obj):
         try:
-            address = ShippingAddressSerializer(obj.shipping_address)
-        except Exception:
+            address = ShippingAddressSerializer(obj.shippingaddress).data
+        except SerializerError:
             address = False
         return address
 

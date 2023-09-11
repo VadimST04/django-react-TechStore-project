@@ -16,7 +16,10 @@ import {
   userDetailsReducer,
   userUpdateProfileReducer,
 } from "./reducers/userReducers.jsx";
-import { orderCreateReducer } from "./reducers/orderReducers.jsx";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+} from "./reducers/orderReducers.jsx";
 
 const reducer = combineReducers({
   productList: productListReducers,
@@ -27,6 +30,7 @@ const reducer = combineReducers({
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
   orderCreate: orderCreateReducer,
+  orderDetails: orderDetailsReducer,
 });
 
 const middleware = [thunk];
